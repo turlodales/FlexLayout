@@ -78,11 +78,16 @@ class HouseCell: UICollectionViewCell {
         layout()
     }
     
-    override func sizeThatFits(_ size: CGSize) -> CGSize {
-        contentView.pin.width(size.width)
-        layout()
-        return contentView.frame.size
+    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+        let size = sizeThatFits(layoutAttributes.size)
+        layoutAttributes.size = size
+        return layoutAttributes
     }
+
+    override func sizeThatFits(_ size: CGSize) -> CGSize {
+        return contentView.flex.sizeThatFits(size: CGSize(width: size.width, height: .nan))
+    }
+
     private func layout() {
         contentView.flex.layout(mode: .adjustHeight)
     }

@@ -17,7 +17,6 @@ import UIKit
 class TableViewExampleView: UIView {
 
     fileprivate let tableView = UITableView()
-    fileprivate let methodCellTemplate = MethodCell()
     
     fileprivate var methods: [Method] = []
     

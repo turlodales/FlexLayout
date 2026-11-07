@@ -227,11 +227,13 @@ static YGConfigRef globalConfig;
   // the measure function. Since we already know that this is a leaf,
   // this *should* be fine. Forgive me Hack Gods.
   const YGNodeRef node = self.node;
-  if (!YGNodeHasMeasureFunc(node)) {
+  if (!YGNodeHasMeasureFunc(node) && self.numberOfChildren == 0) {
     YGNodeSetMeasureFunc(node, YGMeasureView);
   }
 
-  YGNodeMarkDirty(node);
+  if (YGNodeHasMeasureFunc(node)) {
+    YGNodeMarkDirty(node);
+  }
 }
 
 - (NSUInteger)numberOfChildren {
@@ -273,6 +275,7 @@ YG_PROPERTY(YGAlign, alignSelf, AlignSelf)
 YG_PROPERTY(YGWrap, flexWrap, FlexWrap)
 YG_PROPERTY(YGOverflow, overflow, Overflow)
 YG_PROPERTY(YGDisplay, display, Display)
+YG_PROPERTY(YGBoxSizing, boxSizing, BoxSizing)
 
 YG_PROPERTY(CGFloat, flex, Flex)
 YG_PROPERTY(CGFloat, flexGrow, FlexGrow)
@@ -365,7 +368,7 @@ YG_EDGE_PROPERTY(gap, Gap, Gap, YGGutterAll)
 #pragma mark - Private
 
 static float YGMeasureBaselineLabel(
-    YGNodeRef node,
+    YGNodeConstRef node,
     const float width,
     const float height) {
 
@@ -374,7 +377,7 @@ static float YGMeasureBaselineLabel(
 }
 
 static float YGMeasureBaselineTextView(
-    YGNodeRef node,
+    YGNodeConstRef node,
     const float width,
     const float height) {
 
@@ -383,7 +386,7 @@ static float YGMeasureBaselineTextView(
 }
 
 static float YGMeasureBaselineTextField(
-    YGNodeRef node,
+    YGNodeConstRef node,
     const float width,
     const float height) {
 
@@ -401,7 +404,7 @@ static float YGMeasureBaselineTextField(
 }
 
 static YGSize YGMeasureView(
-    YGNodeRef node,
+    YGNodeConstRef node,
     float width,
     YGMeasureMode widthMode,
     float height,
@@ -489,7 +492,12 @@ static void YGAttachNodesFromViewHierachy(UIView* const view) {
     if (!YGNodeHasExactSameChildren(node, subviewsToInclude)) {
       YGRemoveAllChildren(node);
       for (int i = 0; i < subviewsToInclude.count; i++) {
-        YGNodeInsertChild(node, subviewsToInclude[i].yoga.node, i);
+        YGNodeRef child = subviewsToInclude[i].yoga.node;
+        YGNodeRef parent = YGNodeGetParent(child);
+        if (parent != NULL) {
+          YGNodeRemoveChild(parent, child);
+        }
+        YGNodeInsertChild(node, child, i);
       }
     }
 
@@ -536,7 +544,7 @@ static void YGApplyLayoutToViewHierarchy(UIView* view, BOOL preserveOrigin) {
 
   const YGLayout* yoga = view.yoga;
 
-  if (!yoga.isIncludedInLayout) {
+  if (!yoga.isEnabled || !yoga.isIncludedInLayout) {
     return;
   }
 

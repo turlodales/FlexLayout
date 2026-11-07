@@ -18,7 +18,6 @@ class CollectionViewExampleView: UIView {
 
     fileprivate let collectionView: UICollectionView
     fileprivate let flowLayout = UICollectionViewFlowLayout()
-    fileprivate let cellTemplate = HouseCell()
     
     fileprivate var houses: [House] = []
     
@@ -29,6 +28,7 @@ class CollectionViewExampleView: UIView {
         
         flowLayout.minimumLineSpacing = 8
         flowLayout.minimumInteritemSpacing = 0
+        flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         
         if #available(iOS 11.0, *) {
             flowLayout.sectionInsetReference = .fromSafeArea
@@ -71,9 +71,9 @@ extension CollectionViewExampleView: UICollectionViewDelegateFlowLayout, UIColle
         cell.configure(house: houses[indexPath.row])
         return cell
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        cellTemplate.configure(house: houses[indexPath.row])
-        return cellTemplate.sizeThatFits(CGSize(width: collectionView.bounds.width, height: .greatestFiniteMagnitude))
+        // The height is only an estimate. HouseCell computes its actual height in preferredLayoutAttributesFitting(_:).
+        return CGSize(width: collectionView.bounds.width, height: 120)
     }
 }

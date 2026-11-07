@@ -84,10 +84,6 @@ class MenuViewController: BaseViewController {
         mainView.delegate = self
     }
     
-//    override func viewDidAppear(_ animated: Bool) {
-//        super.viewDidAppear(true)
-//        didSelect(pageType: .collectionView)
-//    }
 }
 
 // MARK: MenuViewDelegate

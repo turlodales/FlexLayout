@@ -13,7 +13,8 @@
 // Created by Luc Dion on 2017-06-19.
 
 import UIKit
-#if FLEXLAYOUT_SWIFT_PACKAGE
+
+#if SWIFT_PACKAGE
 import FlexLayoutYogaKit
 #endif
 
@@ -25,6 +26,7 @@ import FlexLayoutYogaKit
     label.flex.margin(10)
  ```
  */
+@MainActor
 public final class Flex {
     
     //
@@ -57,9 +59,12 @@ public final class Flex {
     //
     
     /**
-     This method adds a flex item (UIView) to a flex container. Internally the methods adds the UIView has subviews and enables flexbox.
+     Adds a flex item (`UIView`) to the receiver and returns the item's flex interface.
+     
+     This method internally creates a new `UIView` instance corresponding to the flex item,
+     and is useful for adding a flex item/container when you don't need to refer to it later.
     
-     - Returns: The added view flex interface
+     - Returns: The flex interface corresponding to the added view.
      */
     @discardableResult
     public func addItem() -> Flex {
@@ -68,11 +73,12 @@ public final class Flex {
     }
     
     /**
-     This method is similar to `addItem(: UIView)` except that it also creates the flex item's UIView. Internally the method creates an
-     UIView, adds it has subviews and enables flexbox. This is useful to add a flex item/container easily when you don't need to refer to it later.
+     Adds a flex item (`UIView`) to the receiver and returns the item's flex interface.
     
-     - Parameter view: view to add to the flex container
-     - Returns: The added view flex interface
+     This method enables flexbox for `view` and adds it as a subview of the receiver's associated host view.
+    
+     - Parameter view: The view to be added.
+     - Returns: The flex interface corresponding to the added view.
      */
     @discardableResult
     public func addItem(_ view: UIView) -> Flex {
@@ -133,7 +139,7 @@ public final class Flex {
      flexbox's UIView is excluded, FlexLayout won't layout the view and its children views.
     
      - Parameter included: true to layout the view
-     - Returns:
+     - Returns: Flex interface
      */
     @discardableResult
     public func isIncludedInLayout(_ included: Bool) -> Flex {
@@ -230,7 +236,7 @@ public final class Flex {
      root of your layout tree.
     
      - Parameter value: new LayoutDirection
-     - Returns:
+     - Returns: Flex interface
     */
     @discardableResult
     public func layoutDirection(_ value: LayoutDirection) -> Flex {
@@ -515,7 +521,7 @@ public final class Flex {
      media types. AspectRatio accepts any floating point value > 0, the default is undefined.
     
      - Parameter value:
-     - Returns:
+     - Returns: Flex interface
     */
     @discardableResult
     public func aspectRatio(_ value: CGFloat?) -> Flex {
@@ -529,7 +535,7 @@ public final class Flex {
      media types. AspectRatio accepts any floating point value > 0, the default is undefined.
     
      - Parameter value:
-     - Returns:
+     - Returns: Flex interface
     */
     @discardableResult
     public func aspectRatio(of imageView: UIImageView) -> Flex {
@@ -540,7 +546,7 @@ public final class Flex {
     }
     
     //
-    // MARK: Absolute positionning
+    // MARK: Position / Inset
     //
     
     /**
@@ -556,7 +562,7 @@ public final class Flex {
     
     /**
      Set the left edge distance from the container left edge in pixels.
-     This method is valid only when the item position is absolute (`view.flex.position(.absolute)`)
+     This method is valid only when the item position is absolute or relative. It is not valid when the position is static.
      */
     @discardableResult
     public func left(_ value: CGFloat) -> Flex {
@@ -566,7 +572,7 @@ public final class Flex {
 
     /**
      Set the left edge distance from the container left edge in percentage of its container width.
-     This method is valid only when the item position is absolute (`view.flex.position(.absolute)`)
+     This method is valid only when the item position is absolute or relative. It is not valid when the position is static.
      */
     @discardableResult
     public func left(_ percent: FPercent) -> Flex {
@@ -576,7 +582,7 @@ public final class Flex {
     
     /**
      Set the top edge distance from the container top edge in pixels.
-     This method is valid only when the item position is absolute (`view.flex.position(.absolute)`)
+     This method is valid only when the item position is absolute or relative. It is not valid when the position is static.
      */
     @discardableResult
     public func top(_ value: CGFloat) -> Flex {
@@ -586,7 +592,7 @@ public final class Flex {
 
     /**
      Set the top edge distance from the container top edge in percentage of its container height.
-     This method is valid only when the item position is absolute (`view.flex.position(.absolute)`)
+     This method is valid only when the item position is absolute or relative. It is not valid when the position is static.
      */
     @discardableResult
     public func top(_ percent: FPercent) -> Flex {
@@ -596,7 +602,7 @@ public final class Flex {
     
     /**
      Set the right edge distance from the container right edge in pixels.
-     This method is valid only when the item position is absolute (`view.flex.position(.absolute)`)
+     This method is valid only when the item position is absolute or relative. It is not valid when the position is static.
      */
     @discardableResult
     public func right(_ value: CGFloat) -> Flex {
@@ -606,7 +612,7 @@ public final class Flex {
 
     /**
      Set the right edge distance from the container right edge in percentage of its container width.
-     This method is valid only when the item position is absolute (`view.flex.position(.absolute)`)
+     This method is valid only when the item position is absolute or relative. It is not valid when the position is static.
      */
     @discardableResult
     public func right(_ percent: FPercent) -> Flex {
@@ -616,7 +622,7 @@ public final class Flex {
 
     /**
      Set the bottom edge distance from the container bottom edge in pixels.
-     This method is valid only when the item position is absolute (`view.flex.position(.absolute)`)
+     This method is valid only when the item position is absolute or relative. It is not valid when the position is static.
      */
     @discardableResult
     public func bottom(_ value: CGFloat) -> Flex {
@@ -626,7 +632,7 @@ public final class Flex {
 
     /**
      Set the bottom edge distance from the container bottom edge in percentage of its container height.
-     This method is valid only when the item position is absolute (`view.flex.position(.absolute)`)
+     This method is valid only when the item position is absolute or relative. It is not valid when the position is static.
      */
     @discardableResult
     public func bottom(_ percent: FPercent) -> Flex {
@@ -636,7 +642,7 @@ public final class Flex {
     
     /**
      Set the start edge (LTR=left, RTL=right) distance from the container start edge in pixels.
-     This method is valid only when the item position is absolute (`view.flex.position(.absolute)`)
+     This method is valid only when the item position is absolute or relative. It is not valid when the position is static.
      */
     @discardableResult
     public func start(_ value: CGFloat) -> Flex {
@@ -647,7 +653,7 @@ public final class Flex {
     /**
      Set the start edge (LTR=left, RTL=right) distance from the container start edge in
      percentage of its container width.
-     This method is valid only when the item position is absolute (`view.flex.position(.absolute)`)
+     This method is valid only when the item position is absolute or relative. It is not valid when the position is static.
      */
     @discardableResult
     public func start(_ percent: FPercent) -> Flex {
@@ -657,7 +663,7 @@ public final class Flex {
     
     /**
      Set the end edge (LTR=right, RTL=left) distance from the container end edge in pixels.
-     This method is valid only when the item position is absolute (`view.flex.position(.absolute)`)
+     This method is valid only when the item position is absolute or relative. It is not valid when the position is static.
      */
     @discardableResult
     public func end(_ value: CGFloat) -> Flex {
@@ -668,7 +674,7 @@ public final class Flex {
     /**
      Set the end edge (LTR=right, RTL=left) distance from the container end edge in
      percentage of its container width.
-     This method is valid only when the item position is absolute (`view.flex.position(.absolute)`)
+     This method is valid only when the item position is absolute or relative. It is not valid when the position is static.
      */
     @discardableResult
     public func end(_ percent: FPercent) -> Flex {
@@ -677,9 +683,10 @@ public final class Flex {
     }
     
     /**
-      Set the left and right edges distance from the container edges in pixels.
-      This method is valid only when the item position is absolute (`view.flex.position(.absolute)`)
-      */
+     Set the left and right edges distance from the container edges in pixels.
+     This method is valid only when the item position is absolute or relative. It is not valid when the position is static.
+     For relative position, the right edge will be ignored.
+     */
     @discardableResult
     public func horizontally(_ value: CGFloat) -> Flex {
         yoga.left = YGValue(value)
@@ -687,10 +694,11 @@ public final class Flex {
         return self
      }
 
-     /**
-      Set the left and right edges distance from the container edges in percentage of its container width.
-      This method is valid only when the item position is absolute (`view.flex.position(.absolute)`)
-      */
+    /**
+     Set the left and right edges distance from the container edges in percentage of its container width.
+     This method is valid only when the item position is absolute or relative. It is not valid when the position is static.
+     For relative position, the right edge will be ignored.
+     */
     @discardableResult
     public func horizontally(_ percent: FPercent) -> Flex {
         yoga.left = YGValue(value: Float(percent.value), unit: .percent)
@@ -700,7 +708,8 @@ public final class Flex {
     
     /**
      Set the top and bottom edges distance from the container edges in pixels.
-     This method is valid only when the item position is absolute (`view.flex.position(.absolute)`)
+     This method is valid only when the item position is absolute or relative. It is not valid when the position is static.
+     For relative position, the bottom edge will be ignored.
      */
     @discardableResult
     public func vertically(_ value: CGFloat) -> Flex {
@@ -711,7 +720,8 @@ public final class Flex {
     
     /**
      Set the top and bottom edges distance from the container edges in percentage of its container height.
-     This method is valid only when the item position is absolute (`view.flex.position(.absolute)`)
+     This method is valid only when the item position is absolute or relative. It is not valid when the position is static.
+     For relative position, the bottom edge will be ignored.
      */
     @discardableResult
     public func vertically(_ percent: FPercent) -> Flex {
@@ -722,7 +732,8 @@ public final class Flex {
     
     /**
      Set all edges distance from the container edges in pixels.
-     This method is valid only when the item position is absolute (`view.flex.position(.absolute)`)
+     This method is valid only when the item position is absolute or relative. It is not valid when the position is static.
+     For relative position, the bottom and right edges will be ignored.
      */
     @discardableResult
     public func all(_ value: CGFloat) -> Flex {
@@ -735,7 +746,8 @@ public final class Flex {
     
     /**
      Set all edges distance from the container edges in percentage of its container size.
-     This method is valid only when the item position is absolute (`view.flex.position(.absolute)`)
+     This method is valid only when the item position is absolute or relative. It is not valid when the position is static.
+     For relative position, the bottom and right edges will be ignored.
      */
     @discardableResult
     public func all(_ percent: FPercent) -> Flex {
@@ -880,7 +892,7 @@ public final class Flex {
     
     /**
      Set all margins using UIEdgeInsets.
-     This method is particularly useful to set all margins using iOS 11 `UIView.safeAreaInsets`.
+     This method is particularly useful to set all margins using `UIView.safeAreaInsets`.
      */
     @discardableResult
     public func margin(_ insets: UIEdgeInsets) -> Flex {
@@ -893,11 +905,8 @@ public final class Flex {
     
     /**
      Set margins using NSDirectionalEdgeInsets.
-     This method is particularly to set all margins using iOS 11 `UIView.directionalLayoutMargins`.
-     
-     Available only on iOS 11 and higher.
+     This method is particularly to set all margins using `UIView.directionalLayoutMargins`.
      */
-    @available(tvOS 11.0, iOS 11.0, *)
     @discardableResult
     public func margin(_ directionalInsets: NSDirectionalEdgeInsets) -> Flex {
         yoga.marginTop = YGValue(directionalInsets.top)
@@ -1113,7 +1122,7 @@ public final class Flex {
     
     /**
      Set paddings using UIEdgeInsets.
-     This method is particularly useful to set all paddings using iOS 11 `UIView.safeAreaInsets`.
+     This method is particularly useful to set all paddings using `UIView.safeAreaInsets`.
      */
     @discardableResult
     public func padding(_ insets: UIEdgeInsets) -> Flex {
@@ -1126,11 +1135,8 @@ public final class Flex {
     
     /**
      Set paddings using NSDirectionalEdgeInsets.
-     This method is particularly to set all paddings using iOS 11 `UIView.directionalLayoutMargins`.
-     
-     Available only on iOS 11 and higher.
+     This method is particularly to set all paddings using `UIView.directionalLayoutMargins`.
      */
-    @available(tvOS 11.0, iOS 11.0, *)
     @discardableResult
     public func padding(_ directionalInsets: NSDirectionalEdgeInsets) -> Flex {
         yoga.paddingTop = YGValue(directionalInsets.top)
@@ -1213,6 +1219,49 @@ public final class Flex {
     }
     
     //
+    // MARK: Gap
+    //
+
+    /**
+     Set distance between columns.
+     
+     - Parameters:
+       - value: distance
+     - Returns: flex interface
+    */
+    @discardableResult
+    public func columnGap(_ value: CGFloat) -> Flex {
+        yoga.columnGap = value
+        return self
+    }
+    
+    /**
+     Set distance between rows.
+     
+     - Parameters:
+       - value: distance
+     - Returns: flex interface
+    */
+    @discardableResult
+    public func rowGap(_ value: CGFloat) -> Flex {
+        yoga.rowGap = value
+        return self
+    }
+    
+    /**
+     Set distance between both of rows and columns.
+     
+     - Parameters:
+       - value: distance
+     - Returns: flex interface
+    */
+    @discardableResult
+    public func gap(_ value: CGFloat) -> Flex {
+        yoga.gap = value
+        return self
+    }
+    
+    //
     // MARK: UIView Visual properties
     //
 
@@ -1280,7 +1329,20 @@ public final class Flex {
         yoga.display = value.yogaValue
         return self
     }
-    
+
+    //
+    // MARK: Box Sizing
+    //
+  
+    /**
+     Set the box sizing
+     */
+    @discardableResult
+    public func boxSizing(_ value: BoxSizing) -> Flex {
+        yoga.boxSizing = value.yogaValue
+        return self
+    }
+
     // MARK: Enums
     
     /**
@@ -1328,6 +1390,9 @@ public final class Flex {
         case spaceBetween
         /// Lines are evenly distributed in the flex container, with half-size spaces on either end	Play it »
         case spaceAround
+        /// Lines are evenly distributed in the flex container
+        /// The size of gaps between children and between the parent's edges and the first/last child will all be equal
+        case spaceEvenly
     }
     
     /**
@@ -1376,10 +1441,12 @@ public final class Flex {
     /**
      */
     public enum Position {
-        /// Default value.
+        /// Default value. Positioned according to the flex container's flow. The item is positioned using Insets properties (top, bottom, left, right, start, end) from its normal position within its flex container and will take up space within the flex container. This node will always form a containing block.
         case relative
-        /// Positioned absolutely in regards to its container. The item is positionned using properties top, bottom, left, right, start, end.
+        /// Positioned absolutely, removed from the flex container's flow. The item is positioned using Insets properties (top, bottom, left, right, start, end). Insets will offset the node from its containing block.
         case absolute
+        /// Positioned like relative but ignores insets and will not form a containing block.
+        case `static`
     }
     
     /**
@@ -1413,8 +1480,22 @@ public final class Flex {
         case flex
         /// With this value, the item will be hidden and not be calculated
         case none
+        /// With this value, the node is removed from the layout flow, while its children are preserved and hoisted.
+        /// This allows higher-level UI frameworks to compose wrapper components (e.g., to handle events)
+        /// without influencing the layout of child nodes.
+        case contents
     }
-    
+
+    public enum BoxSizing {
+        /// Default value.
+        /// With `borderBox`, the specified dimensions (e.g., width, height) include the content, padding, and border.
+        /// This means the overall size of the element is as defined, with padding and border accounted for inside.
+        case borderBox
+        /// With `contentBox`, the specified dimensions refer only to the content area.
+        /// Padding and borders are added outside these dimensions, potentially increasing the total size of the element.
+        case contentBox
+    }
+
     /*public enum Overflow {
      /// Items that overflow
         case visible

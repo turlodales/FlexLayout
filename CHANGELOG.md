@@ -7,6 +7,172 @@
 
 # Change Log
 
+## [2.3.0](https://github.com/layoutBox/FlexLayout/releases/tag/2.3.0)
+
+#### Remove CocoaPods and Carthage support
+
+Following the [CocoaPods trunk read-only plan](https://blog.cocoapods.org/CocoaPods-Specs-Repo/), FlexLayout is now distributed only through Swift Package Manager. Versions up to 2.2.3 remain available on CocoaPods trunk. CI now runs on Xcode 27.
+
+Added by [OhKanghoon](https://github.com/OhKanghoon) in Pull Request [#288](https://github.com/layoutBox/FlexLayout/pull/288)
+
+
+#### Fix text truncation by updating Yoga to 3.2.2
+
+Yoga 3.2.1 can shrink a measured text node by one physical pixel at a fractional offset, causing a UILabel to truncate text that should fit. The minimum Yoga version is now 3.2.2, which backports [react/yoga#2040](https://github.com/react/yoga/pull/2040).
+
+Added by [stleamist](https://github.com/stleamist) in Pull Request [#289](https://github.com/layoutBox/FlexLayout/pull/289)
+
+
+#### Preserve non-Flex view frames during layout
+
+Applying the layout no longer overwrites the manually managed frames of non-Flex views when they share a container with enabled Flex children.
+
+Added by [heoblitz](https://github.com/heoblitz) in Pull Request [#287](https://github.com/layoutBox/FlexLayout/pull/287)
+
+
+## [2.2.3](https://github.com/layoutBox/FlexLayout/releases/tag/2.2.3)
+
+#### Add support for SPM dynamic linking
+
+This allows users to link FlexLayout as a dynamic framework when needed for their specific use cases.
+
+Added by [heoblitz](https://github.com/heoblitz) in Pull Request [#284](https://github.com/layoutBox/FlexLayout/pull/284)
+
+
+#### Fix error when dynamically removing views
+
+Currently, FlexLayout does not guarantee that the UIView hierarchy state matches the Yoga node structure. This is because nodes are only updated during the layout process by following the UIView hierarchy.
+When a child UIView is dynamically removed and markDirty() is called, it causes an error and terminates the program because it doesn't align with Yoga's logic.
+
+In React Native's case, views that become leaves are fixed and used consistently, but FlexLayout allows any UIView to become a leaf. Therefore, we add defensive code to prevent logical errors.
+
+Added by [heoblitz](https://github.com/heoblitz) in Pull Request [#281](https://github.com/layoutBox/FlexLayout/pull/281)
+
+
+## [2.2.2](https://github.com/layoutBox/FlexLayout/releases/tag/2.2.2)
+
+#### Support Swift 6
+
+Added by [heoblitz](https://github.com/heoblitz) in Pull Request [#277](https://github.com/layoutBox/FlexLayout/pull/277)
+
+
+## [2.2.0](https://github.com/layoutBox/FlexLayout/releases/tag/2.2.0)
+
+#### Upgrade yoga to v3.2.1
+
+Added by [OhKanghoon](https://github.com/OhKanghoon) in Pull Request [#271](https://github.com/layoutBox/FlexLayout/pull/266)
+
+#### Upgrade yoga to v3.1.0
+
+Added by [OhKanghoon](https://github.com/OhKanghoon) in Pull Request [#266](https://github.com/layoutBox/FlexLayout/pull/266)
+
+
+## [2.0.10](https://github.com/layoutBox/FlexLayout/releases/tag/2.0.10)
+
+#### Support `align-content`: `space-evenly`
+
+Added by [OhKanghoon](https://github.com/OhKanghoon) in Pull Request [#255](https://github.com/layoutBox/FlexLayout/pull/255)
+
+
+## [2.0.9](https://github.com/layoutBox/FlexLayout/releases/tag/2.0.9)
+
+#### Add `static` position feature
+
+Add feature for the static position supported in Yoga version 3.0.0.
+- Due to the default behavior of Yoga, insets like top, left, bottom, and right also affect relative position view. Accordingly, the README, docs and comments have been updated to match the Yoga specifications.
+- Added static case to position and unit tests.
+
+https://www.yogalayout.dev/docs/styling/position
+https://www.yogalayout.dev/docs/styling/insets
+
+Added by [heoblitz](https://github.com/heoblitz) in Pull Request [#245](https://github.com/layoutBox/FlexLayout/pull/254)
+
+## [2.0.7](https://github.com/layoutBox/FlexLayout/releases/tag/2.0.7)
+
+#### Update yoga to version 3.0.4
+
+Added by [heoblitz](https://github.com/heoblitz) in Pull Request [#245](https://github.com/layoutBox/FlexLayout/pull/252)
+
+
+## [2.0.06](https://github.com/layoutBox/FlexLayout/releases/tag/2.0.07)
+
+#### Remove FlexLayoutYoga duplicate dependency in Swift Package
+
+Added by [OhKanghoon](https://github.com/OhKanghoon) in Pull Request [#245](https://github.com/layoutBox/FlexLayout/pull/245)
+
+
+## [2.0.06](https://github.com/layoutBox/FlexLayout/releases/tag/2.0.06)
+
+#### Fix error that occur when creating XCFramework
+
+Background
+
+- Public header issue occurs when using Objective-C package in [Tuist](https://github.com/tuist/tuist)'s Dependency. To resolve this issue, I want to provide xcframework.
+- Resolve the issue that occurs when creating xcframework due to duplicate 'postfix operator %'.
+
+Contents
+
+- remove unnecessary files and headers
+  - Modified to manage yoga directly in FlexLayout. Buck dependency is now unnecessary.
+- remove duplicated postfix operator
+- update Podfile.lock
+- remove Info.plist
+- move `FlexLayout.h` to public header directory
+
+Added by [OhKanghoon](https://github.com/OhKanghoon) in Pull Request [#244](https://github.com/layoutBox/FlexLayout/pull/244)
+
+
+
+## [2.0.05](https://github.com/layoutBox/FlexLayout/releases/tag/2.0.05)
+Released on 2024-01-11
+
+#### 1) Add `Gap` support
+
+Add `Gap` methods: 
+
+- `columnGap(_ value: CGFloat) -> Flex`
+- `rowGap(_ value: CGFloat) -> Flex`
+- `gap(_ value: CGFloat) -> Flex`
+
+##### background
+After [Yoga layout updated to 2.0.0](https://github.com/layoutBox/FlexLayout/pull/230) the gap func added. and as needed by [this issue](https://github.com/layoutBox/FlexLayout/issues/235) and my company's product, me and my partner @TaekH made feature to use. 🙇‍♂️
+
+Added by [Buseong Kim](https://github.com/Skyline-23) in Pull Request [#241](https://github.com/layoutBox/FlexLayout/pull/241) 
+
+
+#### 2) Fix "Child already has a owner" Assert
+
+Upgrading to the latest version of Yoga introduced an assert in YGNodeInsertChild() that was previously removed accidentally (see relevant commit). This assert will throw an error if the node we are trying to add already has an owner. Unfortunately, we can fall into this case quite easily if we move a view between different superviews (as demonstrated in the following contrived example).
+
+Restoring the changes from this old commit [c303faa](https://github.com/layoutBox/FlexLayout/commit/c303faae7b7b441872f8d49dbd1424db6ec7953f) should ensure that any lingering parent references are cleaned up before we call YGNodeInsertChild()
+
+Added by [kennethpu](https://github.com/kennethpu) in Pull Request [#242](https://github.com/layoutBox/FlexLayout/pull/242)
+
+
+
+## [2.0.04](https://github.com/layoutBox/FlexLayout/releases/tag/2.0.04)
+Released on 2024-01-06
+
+#### Enhance Swift Package experience
+
+- Change the Swift Package Manager to be available without `FLEXLAYOUT_SWIFT_PACKAGE` flag
+- add public header path
+- remove `FLEXLAYOUT_SWIFT_PACKAGE`
+- remove library for internal (FlexLayoutYoga, FlexLayoutYogaKit)
+- move the unit test to the swift package with XCTest
+
+Added by [OhKanghoon](https://github.com/OhKanghoon) in Pull Request [#232](https://github.com/layoutBox/FlexLayout/pull/232)
+
+#### Split the Example project in 2 projects (Cocoapods & SPM)
+
+Split the Example project in 2 projects:
+
+* `FlexLayoutSample`: Use cocoapods dependency manager
+* `FlexLayoutSample-SPM`: Use SPM (Swift Packager Manager) dependency manager
+
+Added by [Luc Dion](https://github.com/lucdion) in Pull Request [#240](https://github.com/layoutBox/FlexLayout/pull/240) 
+
+
 ## [2.0.03](https://github.com/layoutBox/FlexLayout/releases/tag/2.0.03)
 Released on 2023-10-15
 
